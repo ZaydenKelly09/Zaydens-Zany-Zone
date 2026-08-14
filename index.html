@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zayden's Zany Zone</title>
+    
+    <!-- Google Fonts: Space Grotesk -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        :root {
+            --bg-main: #09090b;
+            --bg-secondary: #121212;
+            --bg-card: #1e293b;
+            --accent-purple: #8b5cf6;
+            --bright-purple: #a855f7;
+            --text-primary: #f4f4f5;
+        }
+
+        body {
+            color: var(--text-primary);
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-purple);
+        }
+
+        /* Canvas cursor states */
+        .cursor-move { cursor: move; }
+        .cursor-nwse { cursor: nwse-resize; }
+        .cursor-nesw { cursor: nesw-resize; }
+        .cursor-ew { cursor: ew-resize; }
+        .cursor-ns { cursor: ns-resize; }
+        .cursor-crosshair { cursor: crosshair; }
+
+        /* Hide number input spinners */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* SVG specific styling */
+        .svg-text {
+            font-family: 'Space Grotesk', monospace;
+            fill: #f4f4f5;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            font-size: 1.5px; 
+            pointer-events: none;
+            user-select: none;
+        }
+
+        /* Toast animations */
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .toast-enter { animation: slideIn 0.3s ease-out forwards; }
+        .toast-exit { animation: fadeOut 0.3s ease-out forwards; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col bg-transparent">
+
+    <!-- Fixed Background Layer with Grid and Glows -->
+    <div class="fixed inset-0 z-[-1] bg-[#09090b]">
+        <!-- Dot/Line Grid -->
+        <div class="absolute inset-0 opacity-70" style="background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px); background-size: 32px 32px;"></div>
+        <!-- Ambient Glassmorphism Glows -->
+        <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-purple-900/20 blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-900/10 blur-[120px] pointer-events-none"></div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2"></div>
+
+    <!-- Header / Hero Section -->
+    <header class="relative overflow-hidden bg-[#121212]/60 backdrop-blur-lg border-b border-slate-800/50">
+        <!-- Subtle background glow inside header -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-purple-600/20 blur-[100px] pointer-events-none"></div>
+        
+        <div class="max-w-5xl mx-auto px-6 py-20 text-center relative z-10">
+            <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight leading-tight mb-4 pb-3 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-500">
+                Zayden's Zany Zone
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300 font-medium mb-2 italic">
+                "Oddly useful tools for oddly specific problems."
+            </p>
+            <p class="text-gray-400 max-w-2xl mx-auto mb-8">
+                A curated collection of highly specific calculators and utilities built to save you time. No server uploads, no loading screens—just instant results running right in your browser.
+            </p>
+            <button onclick="document.getElementById('tools-showcase').scrollIntoView({behavior: 'smooth'})" 
+                class="inline-flex items-center gap-2 bg-[#8b5cf6] hover:bg-[#a855f7] text-white px-6 py-3 rounded-full font-semibold transition-all shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] hover:-translate-y-0.5 active:translate-y-0">
+                Explore the Tools
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        
+        <!-- Interactive Tool Showcase -->
+        <section id="tools-showcase" class="max-w-5xl mx-auto px-6 py-16">
+            <div class="grid md:grid-cols-2 gap-8">
+                
+                <!-- Tool Card 1 -->
+                <div class="group bg-[#1e293b]/60 backdrop-blur-md rounded-2xl p-6 border border-slate-700/50 hover:border-[#8b5cf6]/80 transition-all duration-300 hover:shadow-[0_0_30px_rgba(139,92,246,0.15)] flex flex-col h-full cursor-pointer" onclick="document.getElementById('tool-wallpaper').scrollIntoView({behavior: 'smooth'})">
+                    <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mb-4 text-[#a855f7]">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">Dual-Monitor Wallpaper Splitter</h3>
+                    <p class="text-gray-400 flex-grow mb-6">Upload a high-res image and extract two perfectly sized, aspect-ratio locked wallpapers for uneven monitor setups.</p>
+                    <button class="text-[#a855f7] font-semibold group-hover:text-fuchsia-400 flex items-center gap-1 transition-colors">
+                        Take me there! <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+
+                <!-- Tool Card 2 -->
+                <div class="group bg-[#1e293b]/60 backdrop-blur-md rounded-2xl p-6 border border-slate-700/50 hover:border-[#8b5cf6]/80 transition-all duration-300 hover:shadow-[0_0_30px_rgba(139,92,246,0.15)] flex flex-col h-full cursor-pointer" onclick="document.getElementById('tool-rsc').scrollIntoView({behavior: 'smooth'})">
+                    <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mb-4 text-[#a855f7]">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">RSC Blank & Score Line Calc</h3>
+                    <p class="text-gray-400 flex-grow mb-6">Calculate accurate sheet dimensions, score lines, and visualize the layout for Regular Slotted Container boxes instantly.</p>
+                    <button class="text-[#a855f7] font-semibold group-hover:text-fuchsia-400 flex items-center gap-1 transition-colors">
+                        Take me there! <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <hr class="border-slate-800/50 max-w-5xl mx-auto">
+
+        <!-- Tool 1: Wallpaper Splitter -->
+        <section id="tool-wallpaper" class="max-w-7xl mx-auto px-6 py-16">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold mb-2 text-[#f4f4f5]">Dual-Monitor Wallpaper Splitter & Cropper</h2>
+                <p class="text-gray-400">Position and resize two crops to extract perfect wallpapers for multi-monitor setups. Sizes now map exactly to your image's pixel dimensions!</p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-6">
+                <!-- Left: Workspace -->
+                <div class="lg:col-span-2 bg-[#1e293b]/60 backdrop-blur-md rounded-xl p-4 border border-slate-700/50 flex flex-col relative h-[600px] shadow-lg">
+                    <!-- Upload State -->
+                    <div id="upload-overlay" class="absolute inset-4 border-2 border-dashed border-slate-600/70 rounded-lg flex flex-col items-center justify-center bg-[#1e293b]/40 z-20 hover:border-purple-500/80 hover:bg-slate-800/60 transition-colors backdrop-blur-sm">
+                        <svg class="w-12 h-12 text-slate-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                        <p class="text-lg font-medium text-slate-200 mb-2">Drag and drop a high-res image here</p>
+                        <p class="text-slate-400 text-sm mb-6">Supports PNG, JPEG, WebP</p>
+                        <label class="bg-[#8b5cf6] hover:bg-[#a855f7] text-white px-5 py-2 rounded-lg cursor-pointer transition-colors font-medium active:translate-y-0.5">
+                            Browse Files
+                            <input type="file" id="image-upload" class="hidden" accept="image/png, image/jpeg, image/webp">
+                        </label>
+                    </div>
+
+                    <!-- Canvas Workspace (Hidden initially) -->
+                    <div id="workspace-container" class="hidden w-full h-full flex flex-col">
+                        <div class="flex justify-between items-center mb-3">
+                            <div class="text-sm text-slate-300 flex items-center gap-3">
+                                <span id="source-info-name" class="font-medium truncate max-w-[200px]" title=""></span>
+                                <span class="bg-slate-700/80 px-2 py-0.5 rounded text-xs" id="source-info-res"></span>
+                            </div>
+                            <button id="btn-reset-image" class="text-sm text-red-400 hover:text-red-300 font-medium transition-colors">Start Over</button>
+                        </div>
+                        <div id="canvas-wrapper" class="relative flex-grow overflow-hidden bg-black/40 rounded border border-slate-700/50 flex items-center justify-center">
+                            <canvas id="crop-canvas" class="block"></canvas>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-3 text-center">
+                            Pro-tip: Crops will seamlessly snap to edges and to each other.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right: Controls -->
+                <div class="bg-[#121212]/60 backdrop-blur-md rounded-xl border border-slate-800/50 shadow-lg flex flex-col gap-4 p-5 h-[600px] overflow-y-auto">
+                    <h3 class="text-lg font-bold text-slate-200 uppercase tracking-wider mb-2">Crop Settings</h3>
+                    
+                    <!-- Monitor 1 Config -->
+                    <div class="bg-[#1e293b]/70 p-4 rounded-lg border-l-4 border-l-[#8b5cf6] transition-colors" id="panel-m1">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="font-bold text-slate-100 flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-[#8b5cf6]"></span> Monitor 1
+                            </h4>
+                            <span class="text-xs bg-slate-700/80 px-2 py-1 rounded" id="m1-aspect-badge">16:9</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">Width (px)</label>
+                                <input type="number" id="m1-w" value="2560" class="w-full bg-slate-800/80 border border-slate-600/50 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500/80 focus:bg-slate-800 transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">Height (px)</label>
+                                <input type="number" id="m1-h" value="1440" class="w-full bg-slate-800/80 border border-slate-600/50 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500/80 focus:bg-slate-800 transition-colors">
+                            </div>
+                        </div>
+                        <button id="btn-dl-m1" disabled class="w-full bg-slate-700/80 hover:bg-slate-600 active:translate-y-0.5 disabled:active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium py-2 rounded transition-all flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> Download Monitor 1
+                        </button>
+                    </div>
+
+                    <!-- Monitor 2 Config -->
+                    <div class="bg-slate-800/40 border-l-slate-700/50 p-4 rounded-lg border-l-4 transition-colors" id="panel-m2">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="font-bold text-slate-100 flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-emerald-500"></span> Monitor 2
+                            </h4>
+                            <span class="text-xs bg-slate-700/80 px-2 py-1 rounded" id="m2-aspect-badge">9:16</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">Width (px)</label>
+                                <input type="number" id="m2-w" value="1080" class="w-full bg-slate-800/80 border border-slate-600/50 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500/80 focus:bg-slate-800 transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">Height (px)</label>
+                                <input type="number" id="m2-h" value="1920" class="w-full bg-slate-800/80 border border-slate-600/50 rounded px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500/80 focus:bg-slate-800 transition-colors">
+                            </div>
+                        </div>
+                        <button id="btn-dl-m2" disabled class="w-full bg-slate-700/80 hover:bg-slate-600 active:translate-y-0.5 disabled:active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium py-2 rounded transition-all flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> Download Monitor 2
+                        </button>
+                    </div>
+
+                    <div class="mt-auto pt-4 border-t border-slate-800/50">
+                        <button id="btn-dl-zip" disabled class="w-full bg-[#8b5cf6] hover:bg-[#a855f7] active:translate-y-0.5 disabled:active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3 rounded-lg shadow-lg transition-all flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg> Export Both (.ZIP)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-slate-800/50 max-w-5xl mx-auto">
+
+        <!-- Tool 2: RSC Calculator -->
+        <section id="tool-rsc" class="max-w-7xl mx-auto px-6 py-16">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold mb-2 text-[#f4f4f5]">RSC Packaging Blank & Score Line Calculator</h2>
+                <p class="text-gray-400">Calculate scores and layout for a standard Regular Slotted Container with a 2" glue tab.</p>
+            </div>
+
+            <div class="grid lg:grid-cols-12 gap-8">
+                
+                <!-- Left: Inputs & Tabular Results -->
+                <div class="lg:col-span-5 flex flex-col gap-6">
+                    <!-- Inputs -->
+                    <div class="bg-[#1e293b]/60 backdrop-blur-md rounded-xl p-5 border border-slate-700/50 shadow-lg">
+                        <h3 class="text-lg font-bold mb-4 border-b border-slate-700/50 pb-2">Inside Dimensions (Inches)</h3>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm text-slate-400 mb-1">Length (L)</label>
+                                <input type="number" id="rsc-l" value="12" min="0.1" step="0.1" class="w-full bg-slate-800/80 border border-slate-600/50 rounded px-3 py-2 text-white focus:outline-none focus:border-purple-500/80 focus:bg-slate-800 transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-slate-400 mb-1">Width (W)</label>
+                                <input type="number" id="rsc-w" value="10" min="0.1" step="0.1" class="w-full bg-slate-800/80 border border-slate-600/50 rounded px-3 py-2 text-white focus:outline-none focus:border-purple-500/80 focus:bg-slate-800 transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-slate-400 mb-1">Depth (D)</label>
+                                <input type="number" id="rsc-d" value="5" min="0.1" step="0.1" class="w-full bg-slate-800/80 border border-slate-600/50 rounded px-3 py-2 text-white focus:outline-none focus:border-purple-500/80 focus:bg-slate-800 transition-colors">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabular Results -->
+                    <div class="bg-[#1e293b]/60 backdrop-blur-md rounded-xl p-5 border border-slate-700/50 shadow-lg flex-grow">
+                        <h3 class="text-lg font-bold mb-4 border-b border-slate-700/50 pb-2">Calculated Blank Size</h3>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-6 text-center">
+                            <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700/50">
+                                <div class="text-sm text-slate-400">Overall Length</div>
+                                <div class="text-xl font-bold text-purple-400" id="rsc-out-length">--</div>
+                            </div>
+                            <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700/50">
+                                <div class="text-sm text-slate-400">Overall Width</div>
+                                <div class="text-xl font-bold text-emerald-400" id="rsc-out-width">--</div>
+                            </div>
+                        </div>
+
+                        <!-- Horizontal Scores Table -->
+                        <h4 class="font-semibold text-slate-300 mb-2 mt-4">Horizontal Scores (Along Length)</h4>
+                        <div class="overflow-x-auto rounded border border-slate-700/50 mb-4">
+                            <table class="w-full text-sm text-left">
+                                <thead class="text-xs uppercase bg-slate-800/80 text-slate-400">
+                                    <tr>
+                                        <th class="px-4 py-2">Segment</th>
+                                        <th class="px-4 py-2 text-right">Size</th>
+                                        <th class="px-4 py-2 text-right">Cumulative</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rsc-h-table" class="divide-y divide-slate-700/50">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Vertical Scores Table -->
+                        <h4 class="font-semibold text-slate-300 mb-2">Vertical Scores (Along Width)</h4>
+                        <div class="overflow-x-auto rounded border border-slate-700/50">
+                            <table class="w-full text-sm text-left">
+                                <thead class="text-xs uppercase bg-slate-800/80 text-slate-400">
+                                    <tr>
+                                        <th class="px-4 py-2">Segment</th>
+                                        <th class="px-4 py-2 text-right">Size</th>
+                                        <th class="px-4 py-2 text-right">Cumulative</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rsc-v-table" class="divide-y divide-slate-700/50">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Right: SVG Diagram -->
+                <div class="lg:col-span-7 bg-[#121212]/60 backdrop-blur-md rounded-xl p-5 border border-slate-800/50 shadow-lg flex flex-col h-[700px]">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold text-slate-200">Interactive Diagram</h3>
+                        <span class="text-xs bg-slate-800/80 text-slate-400 px-2 py-1 rounded">Not strictly to real-world scale (Visual aid)</span>
+                    </div>
+                    <div class="flex-grow bg-[#1e293b]/40 rounded-lg border border-slate-700/50 p-4 flex items-center justify-center overflow-hidden" id="svg-container">
+                        <!-- Dynamic SVG injected here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="h-20"></div>
+    </main>
+
+    <!-- Application Logic -->
+    <script>
+        /**
+         * Utility: Toast Notifications
+         */
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bg = type === 'error' ? 'bg-red-500/90' : (type === 'warn' ? 'bg-amber-500/90' : 'bg-emerald-500/90');
+            toast.className = `${bg} backdrop-blur-md text-white px-4 py-3 rounded shadow-lg flex items-center gap-2 toast-enter text-sm font-medium border border-white/10`;
+            toast.innerHTML = `
+                ${type === 'error' ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>' : ''}
+                ${type === 'success' ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>' : ''}
+                ${message}
+            `;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('toast-enter');
+                toast.classList.add('toast-exit');
+                toast.addEventListener('animationend', () => toast.remove());
+            }, 3000);
+        }
+
+
+        /**
+         * ==========================================
+         * TOOL 1: DUAL-MONITOR WALLPAPER SPLITTER
+         * ==========================================
+         */
+        const AppState = {
+            img: null,
+            filename: '',
+            crops: [
+                { id: 1, x: 0, y: 0, w: 2560, h: 1440, tW: 2560, tH: 1440, aspect: 2560/1440, color: '#8b5cf6', label: 'Monitor 1' },
+                { id: 2, x: 0, y: 0, w: 1080, h: 1920, tW: 1080, tH: 1920, aspect: 1080/1920, color: '#10b981', label: 'Monitor 2' }
+            ],
+            activeCropId: 1,
+            dragState: { isDragging: false, cropId: null, handle: null, startX: 0, startY: 0, initialCrop: null },
+            snapThreshold: 10 // display pixels
+        };
+
+        const els = {
+            uploadZone: document.getElementById('upload-overlay'),
+            uploadInput: document.getElementById('image-upload'),
+            workspace: document.getElementById('workspace-container'),
+            canvasWrapper: document.getElementById('canvas-wrapper'),
+            canvas: document.getElementById('crop-canvas'),
+            resetBtn: document.getElementById('btn-reset-image'),
+            m1w: document.getElementById('m1-w'),
+            m1h: document.getElementById('m1-h'),
+            m2w: document.getElementById('m2-w'),
+            m2h: document.getElementById('m2-h'),
+            m1badge: document.getElementById('m1-aspect-badge'),
+            m2badge: document.getElementById('m2-aspect-badge'),
+            dlM1: document.getElementById('btn-dl-m1'),
+            dlM2: document.getElementById('btn-dl-m2'),
+            dlZip: document.getElementById('btn-dl-zip'),
+            srcName: document.getElementById('source-info-name'),
+            srcRes: document.getElementById('source-info-res'),
+            p1: document.getElementById('panel-m1'),
+            p2: document.getElementById('panel-m2')
+        };
+
+        const ctx = els.canvas.getContext('2d');
+        let displayScale = 1;
+
+        // --- File Upload & Init ---
+
+        function handleFile(file) {
+            if (!file || !file.type.startsWith('image/')) {
+                showToast('Invalid file type. Please upload an image.', 'error');
+                return;
+            }
+
+            const url = URL.createObjectURL(file);
+            const img = new Image();
+            img.onload = () => {
+                AppState.img = img;
+                AppState.filename = file.name.replace(/\.[^/.]+$/, ""); 
+                
+                els.srcName.textContent = file.name;
+                els.srcName.title = file.name;
+                els.srcRes.textContent = `${img.width} × ${img.height}`;
+
+                els.uploadZone.classList.add('hidden');
+                els.workspace.classList.remove('hidden');
+                
+                els.dlM1.removeAttribute('disabled');
+                els.dlM2.removeAttribute('disabled');
+                els.dlZip.removeAttribute('disabled');
+
+                initCrops();
+                fitCanvasToWrapper();
+                draw();
+            };
+            img.onerror = () => {
+                showToast('Failed to load image. File may be corrupted.', 'error');
+            };
+            img.src = url;
+        }
+
+        els.uploadInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
+        els.uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); els.uploadZone.classList.add('border-purple-500/80', 'bg-slate-800/60'); });
+        els.uploadZone.addEventListener('dragleave', (e) => { e.preventDefault(); els.uploadZone.classList.remove('border-purple-500/80', 'bg-slate-800/60'); });
+        els.uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            els.uploadZone.classList.remove('border-purple-500/80', 'bg-slate-800/60');
+            if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+        });
+
+        els.resetBtn.addEventListener('click', () => {
+            AppState.img = null;
+            els.uploadInput.value = '';
+            els.workspace.classList.add('hidden');
+            els.uploadZone.classList.remove('hidden');
+            els.dlM1.setAttribute('disabled', 'true');
+            els.dlM2.setAttribute('disabled', 'true');
+            els.dlZip.setAttribute('disabled', 'true');
+        });
+
+        // --- Dimensions & Aspects ---
+
+        function getGcd(a, b) {
+            return b === 0 ? a : getGcd(b, a % b);
+        }
+
+        function updateCropDim(cropId) {
+            if (!AppState.img) return;
+            const wInput = cropId === 1 ? els.m1w : els.m2w;
+            const hInput = cropId === 1 ? els.m1h : els.m2h;
+            const badge = cropId === 1 ? els.m1badge : els.m2badge;
+            const crop = AppState.crops.find(c => c.id === cropId);
+            
+            let tW = parseInt(wInput.value, 10);
+            let tH = parseInt(hInput.value, 10);
+            
+            if (isNaN(tW) || tW <= 0) tW = 1920;
+            if (isNaN(tH) || tH <= 0) tH = 1080;
+
+            const gcd = getGcd(tW, tH);
+            badge.textContent = `${tW/gcd}:${tH/gcd}`;
+
+            crop.tW = tW;
+            crop.tH = tH;
+            crop.aspect = tW / tH;
+
+            // Preserve approximate center
+            const cx = crop.x + crop.w / 2;
+            const cy = crop.y + crop.h / 2;
+            
+            // Match 1:1 scale of requested pixels to the image pixels
+            let newW = tW;
+            let newH = tH;
+            
+            // If the requested crop is larger than the image, scale it down to fit
+            if (newW > AppState.img.width || newH > AppState.img.height) {
+                const scale = Math.min(AppState.img.width / newW, AppState.img.height / newH);
+                newW *= scale;
+                newH *= scale;
+            }
+
+            crop.w = newW;
+            crop.h = newH;
+            crop.x = cx - newW / 2;
+            crop.y = cy - newH / 2;
+
+            clampCrop(crop);
+            draw();
+        }
+
+        [els.m1w, els.m1h].forEach(el => el.addEventListener('change', () => updateCropDim(1)));
+        [els.m2w, els.m2h].forEach(el => el.addEventListener('change', () => updateCropDim(2)));
+
+        function initCrops() {
+            const img = AppState.img;
+            
+            // Pre-center to ensure updateCropDim centers them roughly correctly
+            AppState.crops[0].x = img.width / 2;
+            AppState.crops[0].y = img.height / 2;
+            AppState.crops[1].x = img.width / 2;
+            AppState.crops[1].y = img.height / 2;
+
+            updateCropDim(1);
+            updateCropDim(2);
+            
+            const c1 = AppState.crops[0];
+            const c2 = AppState.crops[1];
+
+            // Space them side-by-side if they fit, otherwise offset them
+            if (c1.w + c2.w + 40 <= img.width) {
+                c1.x = (img.width / 2) - c1.w - 20;
+                c2.x = (img.width / 2) + 20;
+            } else {
+                c1.x = 20;
+                c2.x = img.width - c2.w - 20;
+            }
+
+            c1.y = (img.height - c1.h) / 2;
+            c2.y = (img.height - c2.h) / 2;
+
+            clampCrop(c1); 
+            clampCrop(c2);
+        }
+
+        // --- Canvas Rendering & Math ---
+
+        function fitCanvasToWrapper() {
+            if (!AppState.img) return;
+            const wrap = els.canvasWrapper;
+            const wRatio = wrap.clientWidth / AppState.img.width;
+            const hRatio = wrap.clientHeight / AppState.img.height;
+            displayScale = Math.min(wRatio, hRatio) * 0.95; // 95% to leave slight margin
+
+            els.canvas.width = AppState.img.width * displayScale;
+            els.canvas.height = AppState.img.height * displayScale;
+        }
+
+        window.addEventListener('resize', () => {
+            fitCanvasToWrapper();
+            draw();
+        });
+
+        function getHandles(c) {
+            const hs = 10 / displayScale; // handle size in image coords
+            const hh = hs / 2;
+            return {
+                nw: { x: c.x - hh, y: c.y - hh, w: hs, h: hs, cursor: 'nwse-resize' },
+                n:  { x: c.x + c.w/2 - hh, y: c.y - hh, w: hs, h: hs, cursor: 'ns-resize' },
+                ne: { x: c.x + c.w - hh, y: c.y - hh, w: hs, h: hs, cursor: 'nesw-resize' },
+                e:  { x: c.x + c.w - hh, y: c.y + c.h/2 - hh, w: hs, h: hs, cursor: 'ew-resize' },
+                se: { x: c.x + c.w - hh, y: c.y + c.h - hh, w: hs, h: hs, cursor: 'nwse-resize' },
+                s:  { x: c.x + c.w/2 - hh, y: c.y + c.h - hh, w: hs, h: hs, cursor: 'ns-resize' },
+                sw: { x: c.x - hh, y: c.y + c.h - hh, w: hs, h: hs, cursor: 'nesw-resize' },
+                w:  { x: c.x - hh, y: c.y + c.h/2 - hh, w: hs, h: hs, cursor: 'ew-resize' }
+            };
+        }
+
+        function draw() {
+            if (!AppState.img) return;
+            
+            // Update active panel styling for glassmorphism
+            els.p1.classList.toggle('border-l-[#8b5cf6]', AppState.activeCropId === 1);
+            els.p1.classList.toggle('bg-[#1e293b]/70', AppState.activeCropId === 1);
+            els.p1.classList.toggle('bg-slate-800/40', AppState.activeCropId !== 1);
+            els.p1.classList.toggle('border-l-slate-700/50', AppState.activeCropId !== 1);
+            
+            els.p2.classList.toggle('border-l-emerald-500', AppState.activeCropId === 2);
+            els.p2.classList.toggle('bg-[#1e293b]/70', AppState.activeCropId === 2);
+            els.p2.classList.toggle('bg-slate-800/40', AppState.activeCropId !== 2);
+            els.p2.classList.toggle('border-l-slate-700/50', AppState.activeCropId !== 2);
+
+            ctx.clearRect(0, 0, els.canvas.width, els.canvas.height);
+            ctx.save();
+            ctx.scale(displayScale, displayScale);
+
+            // Draw base image
+            ctx.drawImage(AppState.img, 0, 0);
+
+            // Darken overlay
+            ctx.fillStyle = 'rgba(0,0,0,0.6)';
+            ctx.fillRect(0, 0, AppState.img.width, AppState.img.height);
+
+            // Draw crops. Draw inactive first, then active.
+            const cropsToDraw = [...AppState.crops].sort((a,b) => a.id === AppState.activeCropId ? 1 : -1);
+
+            for (const c of cropsToDraw) {
+                const isActive = c.id === AppState.activeCropId;
+                
+                // Cutout
+                ctx.save();
+                ctx.beginPath();
+                ctx.rect(c.x, c.y, c.w, c.h);
+                ctx.clip();
+                ctx.drawImage(AppState.img, 0, 0);
+                
+                // Inner semi-transparent fill for inactive
+                if (!isActive) {
+                    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                    ctx.fillRect(0,0,AppState.img.width, AppState.img.height);
+                }
+                ctx.restore();
+
+                // Border
+                ctx.strokeStyle = isActive ? c.color : '#64748b';
+                ctx.lineWidth = (isActive ? 3 : 2) / displayScale;
+                ctx.setLineDash(isActive ? [] : [5/displayScale, 5/displayScale]);
+                ctx.strokeRect(c.x, c.y, c.w, c.h);
+                ctx.setLineDash([]);
+
+                // Handles
+                if (isActive) {
+                    const handles = getHandles(c);
+                    ctx.fillStyle = c.color;
+                    for (const key in handles) {
+                        const h = handles[key];
+                        ctx.fillRect(h.x, h.y, h.w, h.h);
+                        ctx.strokeStyle = '#fff';
+                        ctx.lineWidth = 1 / displayScale;
+                        ctx.strokeRect(h.x, h.y, h.w, h.h);
+                    }
+                }
+
+                // Label
+                ctx.fillStyle = isActive ? c.color : '#64748b';
+                const fontSize = Math.max(14 / displayScale, 10);
+                ctx.font = `600 ${fontSize}px 'Space Grotesk', sans-serif`;
+                ctx.textBaseline = 'bottom';
+                ctx.fillText(c.label, c.x, c.y - (5 / displayScale));
+            }
+
+            ctx.restore();
+        }
+
+        // --- Interaction Logic ---
+
+        function clampCrop(c) {
+            const minSize = 50 / displayScale;
+            if (c.w < minSize) { c.w = minSize; c.h = c.w / c.aspect; }
+            if (c.h < minSize) { c.h = minSize; c.w = c.h * c.aspect; }
+            
+            if (c.w > AppState.img.width) { c.w = AppState.img.width; c.h = c.w / c.aspect; }
+            if (c.h > AppState.img.height) { c.h = AppState.img.height; c.w = c.h * c.aspect; }
+
+            if (c.x < 0) c.x = 0;
+            if (c.y < 0) c.y = 0;
+            if (c.x + c.w > AppState.img.width) c.x = AppState.img.width - c.w;
+            if (c.y + c.h > AppState.img.height) c.y = AppState.img.height - c.h;
+        }
+
+        function getMousePos(e) {
+            const rect = els.canvas.getBoundingClientRect();
+            return {
+                x: (e.clientX - rect.left) / displayScale,
+                y: (e.clientY - rect.top) / displayScale
+            };
+        }
+
+        function hitTest(x, y) {
+            // Check active crop handles first
+            const activeCrop = AppState.crops.find(c => c.id === AppState.activeCropId);
+            if (activeCrop) {
+                const handles = getHandles(activeCrop);
+                for (const key in handles) {
+                    const h = handles[key];
+                    if (x >= h.x && x <= h.x+h.w && y >= h.y && y <= h.y+h.h) {
+                        return { type: 'handle', cropId: activeCrop.id, handle: key, cursor: h.cursor };
+                    }
+                }
+            }
+
+            // Check interiors (active first)
+            const crops = [...AppState.crops].sort((a,b) => a.id === AppState.activeCropId ? -1 : 1);
+            for (const c of crops) {
+                if (x >= c.x && x <= c.x+c.w && y >= c.y && y <= c.y+c.h) {
+                    return { type: 'interior', cropId: c.id, cursor: 'move' };
+                }
+            }
+            return null;
+        }
+
+        els.canvas.addEventListener('mousemove', (e) => {
+            if (!AppState.img) return;
+            const pos = getMousePos(e);
+            
+            if (!AppState.dragState.isDragging) {
+                const hit = hitTest(pos.x, pos.y);
+                els.canvas.className = 'block ' + (hit ? 'cursor-' + hit.cursor.replace('-resize','') : 'cursor-crosshair');
+                return;
+            }
+
+            const ds = AppState.dragState;
+            const crop = AppState.crops.find(c => c.id === ds.cropId);
+            const dx = pos.x - ds.startX;
+            const dy = pos.y - ds.startY;
+            const initial = ds.initialCrop;
+
+            if (ds.handle === 'interior') {
+                let newX = initial.x + dx;
+                let newY = initial.y + dy;
+
+                // Snapping Logic for Move
+                const st = AppState.snapThreshold / displayScale;
+                const other = AppState.crops.find(c => c.id !== ds.cropId);
+                
+                // Snap to image edges
+                if (Math.abs(newX) < st) newX = 0;
+                if (Math.abs(newY) < st) newY = 0;
+                if (Math.abs(newX + crop.w - AppState.img.width) < st) newX = AppState.img.width - crop.w;
+                if (Math.abs(newY + crop.h - AppState.img.height) < st) newY = AppState.img.height - crop.h;
+
+                // Snap to other crop
+                if (Math.abs(newX + crop.w - other.x) < st) newX = other.x - crop.w; // my right to its left
+                if (Math.abs(newX - (other.x + other.w)) < st) newX = other.x + other.w; // my left to its right
+                if (Math.abs(newY + crop.h - other.y) < st) newY = other.y - crop.h; // my bottom to its top
+                if (Math.abs(newY - (other.y + other.h)) < st) newY = other.y + other.h; // my top to its bottom
+                if (Math.abs(newY - other.y) < st) newY = other.y; // top align
+                if (Math.abs(newX - other.x) < st) newX = other.x; // left align
+
+                crop.x = newX;
+                crop.y = newY;
+
+            } else {
+                // Resize logic with aspect ratio lock
+                const aspect = crop.aspect;
+                let nw = initial.w, nh = initial.h, nx = initial.x, ny = initial.y;
+
+                if (ds.handle.includes('e')) {
+                    nw = initial.w + dx;
+                    nh = nw / aspect;
+                } else if (ds.handle.includes('w')) {
+                    nw = initial.w - dx;
+                    nh = nw / aspect;
+                    nx = initial.x + (initial.w - nw);
+                } else if (ds.handle === 's') {
+                    nh = initial.h + dy;
+                    nw = nh * aspect;
+                    nx = initial.x + (initial.w - nw)/2;
+                } else if (ds.handle === 'n') {
+                    nh = initial.h - dy;
+                    nw = nh * aspect;
+                    nx = initial.x + (initial.w - nw)/2;
+                    ny = initial.y + (initial.h - nh);
+                }
+
+                // specific corner Y adjustments based on aspect scaling
+                if (ds.handle === 'nw') ny = initial.y + (initial.h - nh);
+                if (ds.handle === 'ne') ny = initial.y + (initial.h - nh);
+                if (ds.handle === 'sw') ny = initial.y; // y doesn't change from anchor
+                if (ds.handle === 'se') ny = initial.y;
+                if (ds.handle === 'e') ny = initial.y + (initial.h - nh)/2;
+                if (ds.handle === 'w') ny = initial.y + (initial.h - nh)/2;
+
+                crop.w = nw; crop.h = nh; crop.x = nx; crop.y = ny;
+            }
+
+            clampCrop(crop);
+            draw();
+        });
+
+        els.canvas.addEventListener('mousedown', (e) => {
+            if (!AppState.img) return;
+            const pos = getMousePos(e);
+            const hit = hitTest(pos.x, pos.y);
+            
+            if (hit) {
+                AppState.activeCropId = hit.cropId;
+                AppState.dragState = {
+                    isDragging: true,
+                    cropId: hit.cropId,
+                    handle: hit.type === 'interior' ? 'interior' : hit.handle,
+                    startX: pos.x,
+                    startY: pos.y,
+                    initialCrop: { ...AppState.crops.find(c => c.id === hit.cropId) }
+                };
+                draw(); // highlight active
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            AppState.dragState.isDragging = false;
+        });
+
+        // --- Export & JSZip ---
+
+        function exportCrop(cropId) {
+            const crop = AppState.crops.find(c => c.id === cropId);
+            const canvas = document.createElement('canvas');
+            canvas.width = crop.tW;
+            canvas.height = crop.tH;
+            const eCtx = canvas.getContext('2d');
+            
+            // Draw image scaled to output resolution
+            eCtx.drawImage(
+                AppState.img, 
+                crop.x, crop.y, crop.w, crop.h, // source
+                0, 0, crop.tW, crop.tH          // dest
+            );
+            return canvas;
+        }
+
+        els.dlM1.addEventListener('click', () => {
+            const canvas = exportCrop(1);
+            const link = document.createElement('a');
+            link.download = `${AppState.filename}-monitor1.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            showToast('Monitor 1 wallpaper downloaded!');
+        });
+
+        els.dlM2.addEventListener('click', () => {
+            const canvas = exportCrop(2);
+            const link = document.createElement('a');
+            link.download = `${AppState.filename}-monitor2.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            showToast('Monitor 2 wallpaper downloaded!');
+        });
+
+        els.dlZip.addEventListener('click', () => {
+            const zip = new JSZip();
+            const c1 = exportCrop(1);
+            const c2 = exportCrop(2);
+            
+            const p1 = new Promise(res => c1.toBlob(res, 'image/png'));
+            const p2 = new Promise(res => c2.toBlob(res, 'image/png'));
+
+            Promise.all([p1, p2]).then(blobs => {
+                zip.file(`${AppState.filename}-monitor1.png`, blobs[0]);
+                zip.file(`${AppState.filename}-monitor2.png`, blobs[1]);
+                zip.generateAsync({ type: 'blob' }).then(content => {
+                    const link = document.createElement('a');
+                    link.download = `${AppState.filename}-wallpapers.zip`;
+                    link.href = URL.createObjectURL(content);
+                    link.click();
+                    showToast('ZIP file created and downloaded!');
+                }).catch(e => {
+                    showToast('Failed to create ZIP', 'error');
+                });
+            });
+        });
+
+
+        /**
+         * ==========================================
+         * TOOL 2: RSC CALCULATOR & SVG GENERATION
+         * ==========================================
+         */
+        const rscEls = {
+            l: document.getElementById('rsc-l'),
+            w: document.getElementById('rsc-w'),
+            d: document.getElementById('rsc-d'),
+            outL: document.getElementById('rsc-out-length'),
+            outW: document.getElementById('rsc-out-width'),
+            hTable: document.getElementById('rsc-h-table'),
+            vTable: document.getElementById('rsc-v-table'),
+            svgContainer: document.getElementById('svg-container')
+        };
+
+        function calculateRSC() {
+            const L = parseFloat(rscEls.l.value);
+            const W = parseFloat(rscEls.w.value);
+            const D = parseFloat(rscEls.d.value);
+
+            if (isNaN(L) || L <= 0 || isNaN(W) || W <= 0 || isNaN(D) || D <= 0) {
+                // Invalid input, just clear or leave previous state
+                return;
+            }
+
+            // Formulas
+            const overL = (2 * L) + (2 * W) + 2;
+            const overW = D + W;
+            
+            const hSegments = [
+                { name: 'Glue Tab', size: 2 },
+                { name: 'Panel 1 (Length)', size: L },
+                { name: 'Panel 2 (Width)', size: W },
+                { name: 'Panel 3 (Length)', size: L },
+                { name: 'Panel 4 (Width)', size: W }
+            ];
+
+            const vSegments = [
+                { name: 'Top Flap', size: W / 2 },
+                { name: 'Box Depth', size: D },
+                { name: 'Bottom Flap', size: W / 2 }
+            ];
+
+            // Render Output Dimensions
+            rscEls.outL.textContent = `${overL.toFixed(2)}"`;
+            rscEls.outW.textContent = `${overW.toFixed(2)}"`;
+
+            // Render H-Table
+            let hCum = 0;
+            rscEls.hTable.innerHTML = hSegments.map(seg => {
+                hCum += seg.size;
+                return `
+                    <tr class="hover:bg-slate-800/50 transition-colors">
+                        <td class="px-4 py-2 font-medium text-slate-300">${seg.name}</td>
+                        <td class="px-4 py-2 text-right text-purple-400 font-mono">${seg.size.toFixed(2)}"</td>
+                        <td class="px-4 py-2 text-right text-slate-400 font-mono">${hCum.toFixed(2)}"</td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Render V-Table
+            let vCum = 0;
+            rscEls.vTable.innerHTML = vSegments.map(seg => {
+                vCum += seg.size;
+                return `
+                    <tr class="hover:bg-slate-800/50 transition-colors">
+                        <td class="px-4 py-2 font-medium text-slate-300">${seg.name}</td>
+                        <td class="px-4 py-2 text-right text-emerald-400 font-mono">${seg.size.toFixed(2)}"</td>
+                        <td class="px-4 py-2 text-right text-slate-400 font-mono">${vCum.toFixed(2)}"</td>
+                    </tr>
+                `;
+            }).join('');
+
+            renderRSCSvg(L, W, D, overL, overW);
+        }
+
+        function renderRSCSvg(L, W, D, overL, overW) {
+            // Provide a margin inside viewBox
+            const margin = Math.max(overL, overW) * 0.05; 
+            const vbW = overL + margin * 2;
+            const vbH = overW + margin * 2;
+            const strokeW = Math.max(overL, overW) * 0.005;
+
+            // Generate paths/lines
+            // Bounding box
+            const border = `<rect x="${margin}" y="${margin}" width="${overL}" height="${overW}" fill="#1e293b" fill-opacity="0.4" stroke="#64748b" stroke-width="${strokeW}" />`;
+            
+            // Glue tab shading
+            const glueTab = `<rect x="${margin}" y="${margin + W/2}" width="2" height="${D}" fill="#8b5cf6" fill-opacity="0.3" stroke="#8b5cf6" stroke-width="${strokeW}" />`;
+
+            // Horizontal flap scores (lines from x=2 to end)
+            const hLine1 = `<line x1="${margin + 2}" y1="${margin + W/2}" x2="${margin + overL}" y2="${margin + W/2}" stroke="#94a3b8" stroke-width="${strokeW}" stroke-dasharray="${strokeW*2},${strokeW*2}" />`;
+            const hLine2 = `<line x1="${margin + 2}" y1="${margin + W/2 + D}" x2="${margin + overL}" y2="${margin + W/2 + D}" stroke="#94a3b8" stroke-width="${strokeW}" stroke-dasharray="${strokeW*2},${strokeW*2}" />`;
+
+            // Vertical scores & flap cuts
+            // We have vertical lines at x = 2, 2+L, 2+L+W, 2+L+W+L
+            let vLines = '';
+            let textLabels = '';
+
+            const xPositions = [
+                { x: 2, label: '' },
+                { x: 2 + L, label: 'L' },
+                { x: 2 + L + W, label: 'W' },
+                { x: 2 + 2*L + W, label: 'L' },
+                { x: 2 + 2*L + 2*W, label: 'W' }
+            ];
+
+            // Glue tab label
+            textLabels += `<text class="svg-text" x="${margin + 1}" y="${margin + overW/2}" transform="rotate(-90 ${margin + 1} ${margin + overW/2})">GLUE</text>`;
+
+            for (let i = 0; i < xPositions.length - 1; i++) {
+                const cur = xPositions[i];
+                const next = xPositions[i+1];
+                
+                // Draw vertical line at current x (except last one which is border)
+                if (i > 0) {
+                    // Flap cuts (solid)
+                    vLines += `<line x1="${margin + cur.x}" y1="${margin}" x2="${margin + cur.x}" y2="${margin + W/2}" stroke="#f43f5e" stroke-width="${strokeW*1.5}" />`;
+                    vLines += `<line x1="${margin + cur.x}" y1="${margin + W/2 + D}" x2="${margin + cur.x}" y2="${margin + overW}" stroke="#f43f5e" stroke-width="${strokeW*1.5}" />`;
+                    // Body score (dashed)
+                    vLines += `<line x1="${margin + cur.x}" y1="${margin + W/2}" x2="${margin + cur.x}" y2="${margin + W/2 + D}" stroke="#94a3b8" stroke-width="${strokeW}" stroke-dasharray="${strokeW*2},${strokeW*2}" />`;
+                }
+                
+                // Add panel labels in center depth panel
+                const cx = margin + cur.x + (next.x - cur.x) / 2;
+                const cy = margin + W/2 + D/2;
+                textLabels += `<text class="svg-text font-bold" fill="#a855f7" x="${cx}" y="${cy}">${next.label}</text>`;
+                
+                // Top flap label
+                textLabels += `<text class="svg-text" opacity="0.6" x="${cx}" y="${margin + W/4}">Top</text>`;
+                // Bottom flap label
+                textLabels += `<text class="svg-text" opacity="0.6" x="${cx}" y="${margin + W/2 + D + W/4}">Btm</text>`;
+            }
+
+            // Final string assembly
+            const svgContent = `
+                <svg width="100%" height="100%" viewBox="0 0 ${vbW} ${vbH}" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Legend -->
+                    <g transform="translate(${margin}, ${margin*0.3})">
+                        <line x1="0" y1="0" x2="${margin*2}" y2="0" stroke="#f43f5e" stroke-width="${strokeW*1.5}" />
+                        <text class="svg-text" x="${margin*2.5}" y="0" text-anchor="start">Cut</text>
+                        
+                        <line x1="${margin*6}" y1="0" x2="${margin*8}" y2="0" stroke="#94a3b8" stroke-width="${strokeW}" stroke-dasharray="${strokeW*2},${strokeW*2}" />
+                        <text class="svg-text" x="${margin*8.5}" y="0" text-anchor="start">Score</text>
+                    </g>
+                    ${border}
+                    ${glueTab}
+                    ${hLine1}
+                    ${hLine2}
+                    ${vLines}
+                    ${textLabels}
+                </svg>
+            `;
+
+            rscEls.svgContainer.innerHTML = svgContent;
+        }
+
+        [rscEls.l, rscEls.w, rscEls.d].forEach(el => {
+            el.addEventListener('input', calculateRSC);
+            el.addEventListener('change', calculateRSC); // ensure arrow clicks trigger it
+        });
+
+        // Initialize Calculator
+        calculateRSC();
+
+    </script>
+</body>
+</html>
