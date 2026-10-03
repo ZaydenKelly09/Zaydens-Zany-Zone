@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Find your real resale profit after every cost and fee.">
+    <title>Flip Profit Calculator | Zayden's Zany Zone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/shared.css"><link rel="stylesheet" href="css/flip.css">
+    <script src="js/flip-model.js" defer></script><script src="js/flip.js" defer></script>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+    <header class="site-header"><nav class="site-nav" aria-label="Main navigation">
+        <a class="site-brand" href="index.html"><span class="site-brand-mark" aria-hidden="true">✦</span><span>Zayden's Zany Zone</span></a>
+        <div class="desktop-links">
+            <a class="nav-link" href="index.html">Home</a>
+            <div class="nav-item"><a class="nav-link" href="wallpaper.html" aria-describedby="wallpaper-nav-description">Wallpaper Aligner</a><span class="nav-popover" id="wallpaper-nav-description" role="tooltip">Align one wallpaper across monitors with different sizes, resolutions, and orientations.</span></div>
+            <div class="nav-item"><a class="nav-link" href="rsc-box.html" aria-describedby="rsc-nav-description">RSC Box Calculator</a><span class="nav-popover" id="rsc-nav-description" role="tooltip">Calculate a box blank and see exactly where to mark each score line.</span></div>
+            <div class="nav-item"><a class="nav-link" href="flip-profit.html" aria-describedby="flip-nav-description" aria-current="page">Flip Profit</a><span class="nav-popover" id="flip-nav-description" role="tooltip">See your true resale profit after purchase costs, selling fees, and shipping.</span></div>
+        </div>
+        <details class="mobile-nav"><summary>Tools</summary><div class="mobile-menu">
+            <a href="index.html">Home<small>Browse the oddly useful tools.</small></a>
+            <a href="wallpaper.html">Wallpaper Aligner<small>Align one wallpaper across monitors with different sizes, resolutions, and orientations.</small></a>
+            <a href="rsc-box.html">RSC Box Calculator<small>Calculate a box blank and see exactly where to mark each score line.</small></a>
+            <a href="flip-profit.html" aria-current="page">Flip Profit Calculator<small>See your true resale profit after purchase costs, selling fees, and shipping.</small></a>
+        </div></details>
+    </nav></header>
+    <main class="page-main flex-grow"><section class="flip-page" aria-labelledby="flip-title">
+        <div class="flip-intro"><p class="flip-kicker">What did the flip actually make?</p><h1 id="flip-title">Flip Profit Calculator</h1><p>Count the parts, fees, and postage—not just the buy and sell prices. Every amount stays in this browser.</p></div>
+        <div class="flip-layout"><div class="flip-inputs">
+            <section class="flip-panel"><div class="flip-panel-heading"><span>01 · BUY</span><h2>Money into the item</h2></div><div class="flip-fields">
+                <label for="flip-purchase">Purchase price<input id="flip-purchase" data-cost type="number" min="0" step="any" inputmode="decimal" value="100"></label>
+                <label for="flip-purchaseTax">Purchase sales tax<input id="flip-purchaseTax" data-cost type="number" min="0" step="any" inputmode="decimal" placeholder="0"></label>
+                <label for="flip-parts">Parts / repairs<input id="flip-parts" data-cost type="number" min="0" step="any" inputmode="decimal" placeholder="0"></label>
+                <label for="flip-otherBuy">Other purchase costs<input id="flip-otherBuy" data-cost type="number" min="0" step="any" inputmode="decimal" placeholder="0"></label>
+            </div></section>
+            <section class="flip-panel"><div class="flip-panel-heading"><span>02 · SELL</span><h2>Sale and selling costs</h2></div><div class="flip-fields">
+                <label for="flip-sale">Expected sale price<input id="flip-sale" data-cost type="number" min="0" step="any" inputmode="decimal" value="200"></label>
+                <label for="flip-shipping">Seller-paid shipping<input id="flip-shipping" data-cost type="number" min="0" step="any" inputmode="decimal" placeholder="0"></label>
+            </div><div class="flip-fee-presets"><label for="flip-fee-preset">Fee setup</label><select id="flip-fee-preset"><option value="custom">Custom marketplace</option><option value="none">No marketplace fee</option></select><p>Marketplace fees vary. Set your own current rates below.</p></div>
+                <div class="flip-fields"><label for="flip-feePct">Marketplace fee (%)<input id="flip-feePct" data-cost type="number" min="0" max="99.999" step="any" inputmode="decimal" placeholder="0"></label><label for="flip-fixedFee">Marketplace fixed fee<input id="flip-fixedFee" data-cost type="number" min="0" step="any" inputmode="decimal" placeholder="0"></label><label for="flip-adPct">Promoted listing / ad (%)<input id="flip-adPct" data-cost type="number" min="0" max="99.999" step="any" inputmode="decimal" placeholder="0"></label></div>
+                <details class="flip-advanced"><summary>More selling costs</summary><div class="flip-fields"><label for="flip-insurance">Shipping insurance<input id="flip-insurance" data-cost type="number" min="0" step="any" inputmode="decimal" placeholder="0"></label><label for="flip-packaging">Packaging / materials<input id="flip-packaging" data-cost type="number" min="0" step="any" inputmode="decimal" placeholder="0"></label><label for="flip-otherSell">Other selling costs<input id="flip-otherSell" data-cost type="number" min="0" step="any" inputmode="decimal" placeholder="0"></label></div></details>
+                <div class="flip-save-preset"><label for="flip-preset-name">Save these fees as a preset</label><div><input id="flip-preset-name" type="text" maxlength="40" placeholder="e.g. Local marketplace"><button id="flip-save-preset" type="button">Save fees</button></div></div>
+            </section>
+            <button id="flip-reset" class="flip-reset" type="button">Clear all values</button><p id="flip-error" class="flip-error" role="alert" hidden></p>
+        </div><div class="flip-results">
+            <section class="flip-panel flip-main-result"><span>YOUR TAKE-HOME</span><h2>NET PROFIT</h2><strong id="flip-profit">—</strong><p id="flip-profit-note">After investment and selling costs</p></section>
+            <div class="flip-kpis"><div><span>ROI</span><strong id="flip-roi">—</strong><small>Profit ÷ total invested</small></div><div><span>Profit margin</span><strong id="flip-margin">—</strong><small>Profit ÷ gross sale price</small></div></div>
+            <section class="flip-panel"><div class="flip-panel-heading"><span>WHERE THE MONEY WENT</span><h2>Cost breakdown</h2></div><dl class="flip-breakdown"><div><dt>Gross sale price</dt><dd id="flip-gross">—</dd></div><div><dt>Total invested</dt><dd id="flip-invested">—</dd></div><div><dt>Percentage selling fees</dt><dd id="flip-percent-fees">—</dd></div><div><dt>Other selling costs</dt><dd id="flip-fixed-costs">—</dd></div><div><dt>Total selling costs</dt><dd id="flip-selling">—</dd></div><div><dt>Net proceeds after selling</dt><dd id="flip-proceeds">—</dd></div></dl></section>
+            <section class="flip-panel"><div class="flip-panel-heading"><span>PLAN THE SALE</span><h2>Price targets</h2></div><div class="flip-price-targets"><div><span>Break-even sale price</span><strong id="flip-break-even">—</strong></div><label for="flip-target">I want to make<input id="flip-target" type="number" min="0" step="any" inputmode="decimal" value="100" aria-label="Desired net profit in dollars"></label><div><span>Minimum sale price for that profit</span><strong id="flip-required">—</strong></div></div><p class="flip-note">Percentage fees rise with the sale price. Targets solve for that price, rounded up to the next cent.</p></section>
+            <section class="flip-panel"><div class="flip-panel-heading"><span>QUICK CHECK</span><h2>What about this offer?</h2></div><label for="flip-offer">Proposed sale price<input id="flip-offer" type="number" min="0" step="any" inputmode="decimal" placeholder="Enter an offer"></label><p id="flip-offer-result" class="flip-offer-result">Enter an offer to see its profit and ROI.</p></section>
+        </div></div>
+    </section></main>
+    <footer class="site-footer"><span>Zayden's Zany Zone · Oddly useful tools for oddly specific problems.</span><span><a href="index.html">Browse all tools</a></span></footer>
+</body></html>

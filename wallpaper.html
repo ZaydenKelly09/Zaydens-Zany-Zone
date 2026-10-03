@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Align one wallpaper across monitors with different sizes and orientations.">
+    <title>Multi-Monitor Wallpaper Aligner | Zayden's Zany Zone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/shared.css">
+    <link rel="stylesheet" href="css/wallpaper.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="js/shared.js" defer></script>
+    <script src="js/wallpaper-model.js" defer></script>
+    <script src="js/wallpaper.js" defer></script>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+    <header class="site-header">
+    <nav class="site-nav" aria-label="Main navigation">
+        <a class="site-brand" href="index.html"><span class="site-brand-mark" aria-hidden="true">✦</span><span>Zayden's Zany Zone</span></a>
+        <div class="desktop-links">
+            <a class="nav-link" href="index.html">Home</a>
+            <div class="nav-item"><a class="nav-link" href="wallpaper.html" aria-describedby="wallpaper-nav-description" aria-current="page">Wallpaper Aligner</a><span class="nav-popover" id="wallpaper-nav-description" role="tooltip">Align one wallpaper across monitors with different sizes, resolutions, and orientations.</span></div>
+            <div class="nav-item"><a class="nav-link" href="rsc-box.html" aria-describedby="rsc-nav-description">RSC Box Calculator</a><span class="nav-popover" id="rsc-nav-description" role="tooltip">Calculate a box blank and see exactly where to mark each score line.</span></div>
+            <div class="nav-item"><a class="nav-link" href="flip-profit.html" aria-describedby="flip-nav-description">Flip Profit</a><span class="nav-popover" id="flip-nav-description" role="tooltip">See your true resale profit after purchase costs, selling fees, and shipping.</span></div>
+        </div>
+        <details class="mobile-nav"><summary>Tools</summary><div class="mobile-menu">
+            <a href="index.html">Home<small>Browse the oddly useful tools.</small></a>
+            <a href="wallpaper.html" aria-current="page">Wallpaper Aligner<small>Align one wallpaper across monitors with different sizes, resolutions, and orientations.</small></a>
+            <a href="rsc-box.html">RSC Box Calculator<small>Calculate a box blank and see exactly where to mark each score line.</small></a>
+            <a href="flip-profit.html">Flip Profit Calculator<small>See your true resale profit after purchase costs, selling fees, and shipping.</small></a>
+        </div></details>
+    </nav>
+</header>
+    <div role="status" aria-live="polite" aria-atomic="false" id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2"></div>
+    <main class="page-main flex-grow">
+        <!-- Tool 1: One physical layout, one wallpaper composition -->
+        <section id="tool-wallpaper" class="max-w-7xl mx-auto px-6 py-16" aria-labelledby="wallpaper-title">
+            <div class="mb-8">
+                <p class="wp-eyebrow mb-2">One scene. Every screen.</p>
+                <h2 id="wallpaper-title" class="text-3xl font-bold mb-2">Multi-Monitor Wallpaper Aligner</h2>
+                <p class="text-gray-400">Build one continuous scene across your actual screens. The files are sized for each display and ready to set as its wallpaper.</p>
+                <ol class="wp-workflow" aria-label="Wallpaper workflow">
+                    <li><span>1</span> Configure screens</li><li><span>2</span> Arrange layout</li><li><span>3</span> Compose image</li><li><span>4</span> Export</li>
+                </ol>
+            </div>
+            <div class="wp-shell">
+                <div class="wp-glass wp-preview">
+                    <div class="wp-upload" id="wallpaper-upload-zone">
+                        <span class="wp-upload-icon" aria-hidden="true">✦</span>
+                        <p><strong id="wallpaper-source-name">Choose one wallpaper to begin</strong><br><span class="wp-muted" id="wallpaper-source-info">Drop an image here or browse · PNG, JPEG, WebP · stays on your device.</span></p>
+                        <button class="wp-btn wp-primary" id="wallpaper-browse">Browse images</button>
+                        <button class="wp-btn wp-clear-image" id="wallpaper-clear" data-image-control title="Remove the current wallpaper and choose another">Clear image</button>
+                        <input type="file" id="image-upload" accept="image/png,image/jpeg,image/webp" hidden aria-label="Upload source wallpaper">
+                    </div>
+                    <div class="wp-topline">
+                        <div class="wp-actions" role="group" aria-label="Preview interaction mode">
+                            <button class="wp-btn" id="wallpaper-mode" data-mode="wallpaper" aria-pressed="true">Move wallpaper</button>
+                            <button class="wp-btn" id="arrange-mode" data-mode="arrange" aria-pressed="false">Arrange screens</button>
+                        </div>
+                        <label class="wp-check"><input type="checkbox" id="wallpaper-grid"> Grid</label>
+                    </div>
+                    <canvas id="wallpaper-canvas" tabindex="0" role="img" aria-label="Physical monitor layout. Drag to move the wallpaper; in Arrange monitors mode drag a display. Arrow keys move the wallpaper or selected monitor; Shift moves one inch.">Your browser needs Canvas to preview wallpaper.</canvas>
+                    <div class="wp-legend" id="wallpaper-legend" aria-label="Preview monitor details"></div>
+                    <p class="wp-state" id="wallpaper-status" role="status" aria-live="polite"></p>
+                    <p class="wp-muted wp-hint" id="wallpaper-hint">Drag to pan · Scroll to zoom · Arrow keys nudge; hold Shift for a 1-inch step.</p>
+                    <div class="wp-note">
+                        <div class="wp-compose-heading"><div><span class="wp-step-label">STEP 3</span><h3 class="wp-section-title">Compose the scene</h3></div><span class="wp-muted">One image, shared by every screen</span></div>
+                        <div class="wp-actions wp-compose-actions">
+                            <button class="wp-btn" id="wallpaper-fill" data-image-control title="Cover every screen; some image edges may be cropped">Fill screens</button>
+                            <button class="wp-btn" id="wallpaper-fit" data-image-control title="Show the whole image; uncovered areas stay black">Fit whole image</button>
+                            <button class="wp-btn" id="wallpaper-center" data-image-control title="Center the image without changing its zoom">Center image</button>
+                            <button class="wp-btn" id="wallpaper-reset" data-image-control title="Return to the default fill and centered position">Reset view</button>
+                        </div>
+                        <div class="wp-zoom-control">
+                            <label class="wp-field wp-zoom-label" for="wallpaper-zoom-slider"><span>Zoom</span><span><input id="wallpaper-zoom" type="number" min="1" max="2000" step="0.1" value="100" data-image-control aria-label="Precise zoom percentage"> <span class="wp-muted">%</span></span></label>
+                            <input class="wp-slider" id="wallpaper-zoom-slider" type="range" min="1" max="800" step="0.1" value="100" data-image-control aria-label="Wallpaper zoom">
+                            <div class="wp-zoom-foot"><span>Relative to Fill</span><span>Scale: <output id="wallpaper-density">—</output> px/in</span></div>
+                        </div>
+                        <details class="wp-precision wp-image-precision"><summary>Fine-tune image position <span>inches</span></summary>
+                            <div class="wp-fields wp-position-fields">
+                                <label class="wp-field">Image left (in)<input id="wallpaper-x" type="number" step="any" min="-10000" max="10000" inputmode="decimal" value="0" data-image-control aria-label="Wallpaper left position in inches"></label>
+                                <label class="wp-field">Image top (in)<input id="wallpaper-y" type="number" step="any" min="-10000" max="10000" inputmode="decimal" value="0" data-image-control aria-label="Wallpaper top position in inches"></label>
+                            </div>
+                        </details>
+                    </div>
+                    <details class="wp-help"><summary>How to set these wallpapers in Windows</summary><p>Assign each exported PNG to its matching display. Choose <strong>Center</strong> so Windows does not add scaling or cropping. Each file already contains its part of the scene.</p></details>
+                </div>
+                <div class="wp-controls">
+                    <div class="wp-glass wp-arrangement">
+                        <span class="wp-step-label">STEP 1 + 2</span><h3 class="wp-section-title">Your screens</h3>
+                        <p class="wp-muted mb-3">Set each screen’s resolution and actual diagonal. Then arrange the rectangles to match the visible displays on your desk.</p>
+                        <div class="wp-actions" role="group" aria-label="Monitor arrangement shortcuts">
+                            <button class="wp-btn" id="monitor-left">← Place left</button>
+                            <button class="wp-btn" id="monitor-right">Place right →</button>
+                            <button class="wp-btn" id="monitor-center">Align centers</button>
+                        </div>
+                        <details class="wp-help wp-arrange-help"><summary>More alignment options</summary><div class="wp-actions"><button class="wp-btn" id="monitor-swap">Swap positions</button><button class="wp-btn" id="monitor-top">Align tops</button><button class="wp-btn" id="monitor-bottom">Align bottoms</button><button class="wp-btn" id="monitor-reset">Reset arrangement</button></div></details>
+                        <p class="wp-muted wp-tip">Tip: Choose <strong>Arrange screens</strong> above, then drag a display. Hold Alt to skip snapping.</p>
+                    </div>
+                    <div class="wp-glass" id="wallpaper-monitors"></div>
+                    <div class="wp-glass">
+                        <span class="wp-step-label">STEP 4</span><h3 class="wp-section-title">Take them to your desktop</h3>
+                        <button class="wp-btn wp-primary wp-full wp-export" id="btn-dl-zip" data-image-control>Download both wallpapers <span aria-hidden="true">↓</span></button>
+                        <p class="wp-muted mt-3">One native-size PNG for each screen, packed in a ZIP. Image stays on your device.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+    </main>
+    <footer class="site-footer"><span>Zayden's Zany Zone · Oddly useful tools for oddly specific problems.</span><span><a href="index.html">Browse all tools</a></span></footer>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Find blank dimensions and exact score marks for a Regular Slotted Container.">
+    <title>RSC Box Calculator | Zayden's Zany Zone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/shared.css">
+    <link rel="stylesheet" href="css/rsc.css">
+    <script src="js/rsc-model.js" defer></script>
+    <script src="js/rsc.js" defer></script>
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+    <header class="site-header">
+    <nav class="site-nav" aria-label="Main navigation">
+        <a class="site-brand" href="index.html"><span class="site-brand-mark" aria-hidden="true">✦</span><span>Zayden's Zany Zone</span></a>
+        <div class="desktop-links">
+            <a class="nav-link" href="index.html">Home</a>
+            <div class="nav-item"><a class="nav-link" href="wallpaper.html" aria-describedby="wallpaper-nav-description">Wallpaper Aligner</a><span class="nav-popover" id="wallpaper-nav-description" role="tooltip">Align one wallpaper across monitors with different sizes, resolutions, and orientations.</span></div>
+            <div class="nav-item"><a class="nav-link" href="rsc-box.html" aria-describedby="rsc-nav-description" aria-current="page">RSC Box Calculator</a><span class="nav-popover" id="rsc-nav-description" role="tooltip">Calculate a box blank and see exactly where to mark each score line.</span></div>
+            <div class="nav-item"><a class="nav-link" href="flip-profit.html" aria-describedby="flip-nav-description">Flip Profit</a><span class="nav-popover" id="flip-nav-description" role="tooltip">See your true resale profit after purchase costs, selling fees, and shipping.</span></div>
+        </div>
+        <details class="mobile-nav"><summary>Tools</summary><div class="mobile-menu">
+            <a href="index.html">Home<small>Browse the oddly useful tools.</small></a>
+            <a href="wallpaper.html">Wallpaper Aligner<small>Align one wallpaper across monitors with different sizes, resolutions, and orientations.</small></a>
+            <a href="rsc-box.html" aria-current="page">RSC Box Calculator<small>Calculate a box blank and see exactly where to mark each score line.</small></a>
+            <a href="flip-profit.html">Flip Profit Calculator<small>See your true resale profit after purchase costs, selling fees, and shipping.</small></a>
+        </div></details>
+    </nav>
+</header>
+    
+    <main class="page-main flex-grow">
+        <!-- Tool 2: RSC Calculator -->
+        <section id="tool-rsc" class="max-w-7xl mx-auto px-6 py-16">
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold mb-2 text-[#f4f4f5]">RSC Box Calculator</h2>
+                <p class="text-gray-400">Find your blank size and exact score marks for a Regular Slotted Container with a 2" glue tab.</p>
+            </div>
+
+            <div class="grid lg:grid-cols-12 gap-8">
+                
+                <!-- Left: Inputs & Tabular Results -->
+                <div class="lg:col-span-5 flex flex-col gap-6">
+                    <!-- Inputs -->
+                    <div class="bg-[#1e293b]/60 backdrop-blur-md rounded-xl p-5 border border-slate-700/50 shadow-lg">
+                        <h3 class="text-lg font-bold mb-4 border-b border-slate-700/50 pb-2">Box dimensions</h3>
+                        <fieldset class="rsc-basis"><legend>Dimensions entered as</legend><label><input type="radio" name="rsc-basis" value="interior" checked> Interior</label><label><input type="radio" name="rsc-basis" value="exterior"> Exterior</label></fieldset>
+                        <div class="rsc-dimension-inputs grid grid-cols-3 gap-4">
+                            <div>
+                                <label for="rsc-l" class="block text-sm text-slate-400 mb-1">Length (L)</label>
+                                <input type="number" id="rsc-l" value="12" min="0.001" step="any" inputmode="decimal" class="w-full bg-slate-800/80 border border-slate-600/50 rounded px-3 py-2 text-white focus:outline-none focus:border-purple-500/80 focus:bg-slate-800 transition-colors">
+                            </div>
+                            <div>
+                                <label for="rsc-w" class="block text-sm text-slate-400 mb-1">Width (W)</label>
+                                <input type="number" id="rsc-w" value="10" min="0.001" step="any" inputmode="decimal" class="w-full bg-slate-800/80 border border-slate-600/50 rounded px-3 py-2 text-white focus:outline-none focus:border-purple-500/80 focus:bg-slate-800 transition-colors">
+                            </div>
+                            <div>
+                                <label for="rsc-d" class="block text-sm text-slate-400 mb-1">Depth (D)</label>
+                                <input type="number" id="rsc-d" value="5" min="0.001" step="any" inputmode="decimal" class="w-full bg-slate-800/80 border border-slate-600/50 rounded px-3 py-2 text-white focus:outline-none focus:border-purple-500/80 focus:bg-slate-800 transition-colors">
+                            </div>
+                        </div>
+                        <div class="rsc-board"><label for="rsc-preset">Board thickness</label><div class="rsc-board-row"><select id="rsc-preset" aria-label="Approximate board thickness preset"><option value="0.125" selected>B flute · ~⅛″</option><option value="0.16">C flute · ~0.16″</option><option value="0.06">E flute · ~0.06″</option><option value="custom">Custom</option></select><div class="rsc-thickness-field"><input type="number" id="rsc-thickness" value="0.125" min="0.001" step="any" inputmode="decimal" aria-label="Board thickness in inches"><span>in</span></div></div><small id="rsc-thickness-mm">≈ 3.18 mm</small></div>
+                        <p class="rsc-help">Presets are approximate. Measure your actual board with calipers for the best estimate. Closed RSC top and bottom have overlapping flap layers.</p>
+                        <p class="rsc-error" id="rsc-error" role="alert" hidden></p>
+                        <div class="rsc-dimension-summary" aria-live="polite"><div><span>Interior · usable</span><strong id="rsc-interior">—</strong></div><div><span>Exterior · closed</span><strong id="rsc-exterior">—</strong></div></div>
+                    </div>
+
+                    <!-- Tabular Results -->
+                    <div class="bg-[#1e293b]/60 backdrop-blur-md rounded-xl p-5 border border-slate-700/50 shadow-lg flex-grow">
+                        <h3 class="text-lg font-bold mb-4 border-b border-slate-700/50 pb-2">Blank and score marks</h3>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-6 text-center">
+                            <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700/50">
+                                <div class="text-sm text-slate-400">Overall Length</div>
+                                <div class="text-xl font-bold text-purple-400" id="rsc-out-length">--</div>
+                            </div>
+                            <div class="bg-slate-800/60 p-3 rounded-lg border border-slate-700/50">
+                                <div class="text-sm text-slate-400">Overall Width</div>
+                                <div class="text-xl font-bold text-emerald-400" id="rsc-out-width">--</div>
+                            </div>
+                        </div>
+
+                        <p class="text-sm text-slate-400 mb-3">Measure from the left edge for horizontal marks and the top edge for vertical marks. <strong class="text-slate-200">MARK AT</strong> is your next tape-measure position; the final mark is the blank edge.</p>
+                        <!-- Horizontal Scores Table -->
+                        <h4 class="font-semibold text-slate-300 mb-2 mt-4">Horizontal Scores (Along Length)</h4>
+                        <div class="overflow-x-auto rounded border border-slate-700/50 mb-4">
+                            <table class="rsc-table w-full text-sm text-left">
+                                <thead class="text-xs uppercase bg-slate-800/80 text-slate-400">
+                                    <tr>
+                                        <th scope="col" class="px-4 py-2">Segment</th>
+                                        <th scope="col" class="px-4 py-2 text-right">MARK AT</th>
+                                        <th scope="col" class="px-4 py-2 text-right">Size</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rsc-h-table" class="divide-y divide-slate-700/50">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Vertical Scores Table -->
+                        <h4 class="font-semibold text-slate-300 mb-2">Vertical Scores (Along Width)</h4>
+                        <div class="overflow-x-auto rounded border border-slate-700/50">
+                            <table class="rsc-table rsc-table-vertical w-full text-sm text-left">
+                                <thead class="text-xs uppercase bg-slate-800/80 text-slate-400">
+                                    <tr>
+                                        <th scope="col" class="px-4 py-2">Segment</th>
+                                        <th scope="col" class="px-4 py-2 text-right">MARK AT</th>
+                                        <th scope="col" class="px-4 py-2 text-right">Size</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rsc-v-table" class="divide-y divide-slate-700/50">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Right: SVG Diagram -->
+                <div class="rsc-diagram lg:col-span-7 bg-[#121212]/60 backdrop-blur-md rounded-xl p-5 border border-slate-800/50 shadow-lg flex flex-col">
+                    <div class="rsc-diagram-heading"><div><h3>Interactive Diagram</h3><p>See how the blank folds into a box.</p></div><span>Proportions simplified at extremes</span></div>
+                    <div class="rsc-legend" aria-label="Diagram line legend"><span><i class="rsc-cut-key"></i> Cut</span><span><i class="rsc-score-key"></i> Score / fold</span><span><i class="rsc-glue-key"></i> Glue tab</span></div>
+                    <p class="rsc-scroll-hint">Swipe sideways to see the full blank →</p>
+                    <div class="rsc-diagram-surface" id="svg-container">
+                        <!-- Dynamic SVG injected here -->
+                    </div>
+                    <p class="rsc-diagram-note">The diagram explains the panel layout. Use MARK AT values for measuring; actual manufacturing needs board-specific score allowances.</p>
+                </div>
+            </div>
+        </section>
+        
+
+    </main>
+    <footer class="site-footer"><span>Zayden's Zany Zone · Oddly useful tools for oddly specific problems.</span><span><a href="index.html">Browse all tools</a></span></footer>
+</body>
+</html>
